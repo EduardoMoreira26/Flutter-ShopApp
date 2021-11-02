@@ -38,6 +38,14 @@ class _ProductFormPageState extends State<ProductFormPage> {
     setState(() {});
   }
 
+  bool isValidImageUrl(String url) {
+    bool isValidUrl = Uri.tryParse(url)?.hasAbsolutePath ?? false;
+    bool andsWithFile = url.toLowerCase().endsWith('.png') ||
+        url.toLowerCase().endsWith('.jpg') ||
+        url.toLowerCase().endsWith('.jpeg');
+    return isValidUrl && andsWithFile;
+  }
+
   void _submitForm() {
     final isValid = _formKey.currentState?.validate() ?? false;
 
@@ -90,6 +98,75 @@ class _ProductFormPageState extends State<ProductFormPage> {
     );
   }
 
+  TextFormField inputName(BuildContext context) {
+    return TextFormField(
+      decoration: InputDecoration(labelText: 'Nome'),
+      textInputAction: TextInputAction.next,
+      onFieldSubmitted: (_) => FocusScope.of(context).requestFocus(_priceFocus),
+      onSaved: (name) => _formData['name'] = name ?? '',
+      validator: (_name) {
+        final name = _name ?? '';
+
+        if (name.trim().isEmpty) {
+          return 'Nome é obrigatório';
+        }
+
+        if (name.trim().length < 3) {
+          return 'Mínimo de 3 letras.';
+        }
+
+        return null;
+      },
+    );
+  }
+
+  TextFormField inputPrice(BuildContext context) {
+    return TextFormField(
+      decoration: InputDecoration(labelText: 'Preço'),
+      textInputAction: TextInputAction.next,
+      focusNode: _priceFocus,
+      keyboardType: TextInputType.numberWithOptions(
+        decimal: true,
+      ),
+      onFieldSubmitted: (_) =>
+          FocusScope.of(context).requestFocus(_descriptionFocus),
+      onSaved: (price) => _formData['price'] = double.parse(price ?? '0'),
+      validator: (_price) {
+        final priceString = _price ?? '';
+        final price = double.tryParse(priceString) ?? -1;
+
+        if (price <= 0) {
+          return 'Informe um preço válido!';
+        }
+
+        return null;
+      },
+    );
+  }
+
+  TextFormField inputDescription() {
+    return TextFormField(
+      decoration: InputDecoration(labelText: 'Descrição'),
+      focusNode: _descriptionFocus,
+      keyboardType: TextInputType.multiline,
+      maxLines: 3,
+      onSaved: (description) => _formData['description'] = description ?? '',
+      validator: (_description) {
+        final description = _description ?? '';
+
+        if (description.trim().isEmpty) {
+          return 'Descrição é obrigatório';
+        }
+
+        if (description.trim().length < 10) {
+          return 'Mínimo de 10 letras.';
+        }
+
+        return null;
+      },
+    );
+  }
+
   Row urlAndImageInput() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -105,6 +182,14 @@ class _ProductFormPageState extends State<ProductFormPage> {
             controller: _imageUrlController,
             onFieldSubmitted: (_) => _submitForm(),
             onSaved: (imageUrl) => _formData['imageUrl'] = imageUrl ?? '',
+            validator: (_imageUrl) {
+              final imageUrl = _imageUrl ?? '';
+              if (!isValidImageUrl(imageUrl)) {
+                return 'Informe uma Url válida!';
+              }
+
+              return null;
+            },
           ),
         ),
         Container(
@@ -131,54 +216,4 @@ class _ProductFormPageState extends State<ProductFormPage> {
       ],
     );
   }
-
-   TextFormField inputName(BuildContext context) {
-    return TextFormField(
-      decoration: InputDecoration(labelText: 'Nome'),
-      textInputAction: TextInputAction.next,
-      onFieldSubmitted: (_) => FocusScope.of(context).requestFocus(_priceFocus),
-      onSaved: (name) => _formData['name'] = name ?? '',
-      validator: (_name) {
-        final name = _name ?? '';
-
-        if(name.trim().isEmpty){
-          return 'Nome é obrigatório';
-        }
-
-        if(name.trim().length < 3){
-          return 'Mínimo de 3 letras.';
-        }
-
-        return null;
-      },
-    );
-  }
-
-  TextFormField inputPrice(BuildContext context) {
-    return TextFormField(
-      decoration: InputDecoration(labelText: 'Preço'),
-      textInputAction: TextInputAction.next,
-      focusNode: _priceFocus,
-      keyboardType: TextInputType.numberWithOptions(
-        decimal: true,
-      ),
-      onFieldSubmitted: (_) =>
-          FocusScope.of(context).requestFocus(_descriptionFocus),
-      onSaved: (price) => _formData['price'] = double.parse(price ?? '0'),
-    );
-  }
-
-  TextFormField inputDescription() {
-    return TextFormField(
-      decoration: InputDecoration(labelText: 'Descrição'),
-      focusNode: _descriptionFocus,
-      keyboardType: TextInputType.multiline,
-      maxLines: 3,
-      onSaved: (description) => _formData['description'] = description ?? '',
-    );
-  }
-
-  
-
- 
 }
