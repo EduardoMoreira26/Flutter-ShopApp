@@ -17,7 +17,6 @@ class _ProductFormPageState extends State<ProductFormPage> {
   void initState() {
     super.initState();
     _imageUrlFocus.addListener(updateImgae);
-    
   }
 
   @override
@@ -29,7 +28,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
     _imageUrlFocus.dispose();
   }
 
-  void updateImgae(){
+  void updateImgae() {
     setState(() {});
   }
 
@@ -71,7 +70,9 @@ class _ProductFormPageState extends State<ProductFormPage> {
                 children: [
                   Expanded(
                     child: TextFormField(
-                      decoration: InputDecoration(labelText: 'Url da Imagem'),
+                      decoration: InputDecoration(
+                        labelText: 'Url da Imagem',
+                      ),
                       keyboardType: TextInputType.url,
                       textInputAction: TextInputAction.done,
                       focusNode: _imageUrlFocus,
@@ -95,9 +96,9 @@ class _ProductFormPageState extends State<ProductFormPage> {
                     child: _imageUrlController.text.isEmpty
                         ? Text('Informe a Url')
                         : FittedBox(
-                          child: Image.network(_imageUrlController.text),
-                          fit: BoxFit.cover,
-                        ),
+                            child: Image.network(_imageUrlController.text),
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 ],
               ),
