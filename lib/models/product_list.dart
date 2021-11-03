@@ -47,10 +47,19 @@ class ProductList with ChangeNotifier {
           "isFvorite": product.isFvorite,
         },
       ),
-    );
+    ).then((response) {
+      final id = jsonDecode(response.body)['name'];
 
-    _items.add(product);
-    notifyListeners();
+      _items.add(Product(
+        id: id,
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        imageUrl: product.imageUrl,
+        isFvorite: product.isFvorite,
+      ));
+      notifyListeners();
+    });
   }
 
   void updateProduct(Product product) {
