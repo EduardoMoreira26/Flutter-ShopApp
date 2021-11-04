@@ -24,7 +24,7 @@ class ProductItem extends StatelessWidget {
           children: [
             IconButton(
               icon: Icon(Icons.edit),
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).colorScheme.primary,
               onPressed: () {
                 Navigator.of(context).pushNamed(
                   AppRoutes.PRODUCT_FORM,
@@ -36,29 +36,30 @@ class ProductItem extends StatelessWidget {
               icon: Icon(Icons.delete),
               color: Theme.of(context).errorColor,
               onPressed: () {
-                showDialog(
+                showDialog<bool>(
                   context: context,
                   builder: (ctx) => AlertDialog(
-                    title: Text('Excluir Produto'),
+                    title: Text('Excluir Produto?'),
                     content: Text('Tem certeza?'),
                     actions: [
                       TextButton(
                         child: Text('Não'),
-                        onPressed: () => Navigator.of(ctx).pop(),
+                        onPressed: () => Navigator.of(ctx).pop(false),
                       ),
                       TextButton(
                         child: Text('Sim'),
-                        onPressed: () {
-                          Provider.of<ProductList>(
-                            context,
-                            listen: false,
-                          ).deleteProduct(product);
-                          Navigator.of(ctx).pop();
-                        },
+                        onPressed: () => Navigator.of(ctx).pop(true),
                       ),
                     ],
                   ),
-                );
+                ).then((value) {
+                  if (value ?? false) {
+                    Provider.of<ProductList>(
+                      context,
+                      listen: false,
+                    ).removeProduct(product);
+                  }
+                });
               },
             ),
           ],

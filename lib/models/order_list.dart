@@ -19,12 +19,13 @@ class OrderList with ChangeNotifier {
     _items.insert(
       0,
       Order(
-        id: Random().nextBool().toString(),
+        id: Random().nextDouble().toString(),
         total: cart.totalAmount,
-        products: cart.items.values.toList(),
         date: DateTime.now(),
+        products: cart.items.values.toList(),
       ),
     );
+
     notifyListeners();
   }
 }

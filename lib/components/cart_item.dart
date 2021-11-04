@@ -24,8 +24,8 @@ class CartItemWidget extends StatelessWidget {
           size: 40,
         ),
         alignment: Alignment.centerRight,
-        padding: EdgeInsets.only(right: 20),
-        margin: EdgeInsets.symmetric(
+        padding: const EdgeInsets.only(right: 20),
+        margin: const EdgeInsets.symmetric(
           horizontal: 15,
           vertical: 4,
         ),
@@ -34,21 +34,21 @@ class CartItemWidget extends StatelessWidget {
         return showDialog<bool>(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: Text('Tem certeza?'),
+            title: Text('Tem Certeza?'),
             content: Text('Quer remover o item do carrinho?'),
             actions: [
               TextButton(
                 child: Text('Não'),
-                onPressed: (){
+                onPressed: () {
                   Navigator.of(ctx).pop(false);
                 },
               ),
               TextButton(
                 child: Text('Sim'),
-                onPressed: (){
-                   Navigator.of(ctx).pop(true);
+                onPressed: () {
+                  Navigator.of(ctx).pop(true);
                 },
-              )
+              ),
             ],
           ),
         );
@@ -60,18 +60,24 @@ class CartItemWidget extends StatelessWidget {
         ).removeItem(cartItem.productId);
       },
       child: Card(
-        margin: EdgeInsets.symmetric(
+        margin: const EdgeInsets.symmetric(
           horizontal: 15,
           vertical: 4,
         ),
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: ListTile(
             leading: CircleAvatar(
+              backgroundColor: Theme.of(context).colorScheme.primary,
               child: Padding(
-                padding: EdgeInsets.all(5),
+                padding: const EdgeInsets.all(5),
                 child: FittedBox(
-                  child: Text('${cartItem.price}'),
+                  child: Text(
+                    '${cartItem.price}',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
             ),

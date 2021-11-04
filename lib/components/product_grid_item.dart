@@ -33,8 +33,8 @@ class ProductGridItem extends StatelessWidget {
                 product.toggleFavorite();
               },
               icon: Icon(
-                  product.isFvorite ? Icons.favorite : Icons.favorite_border),
-              color: Theme.of(context).accentColor,
+                  product.isFavorite ? Icons.favorite : Icons.favorite_border),
+              color: Theme.of(context).colorScheme.secondary,
             ),
           ),
           title: Text(
@@ -42,7 +42,10 @@ class ProductGridItem extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           trailing: IconButton(
+            icon: Icon(Icons.shopping_cart),
+            color: Theme.of(context).colorScheme.secondary,
             onPressed: () {
+              cart.addItem(product);
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -50,16 +53,13 @@ class ProductGridItem extends StatelessWidget {
                   duration: Duration(seconds: 2),
                   action: SnackBarAction(
                     label: 'DESFAZER',
-                    onPressed: (){
+                    onPressed: () {
                       cart.removeSingleItem(product.id);
                     },
                   ),
-                )
+                ),
               );
-              cart.addItem(product);
             },
-            icon: Icon(Icons.shopping_cart),
-            color: Theme.of(context).accentColor,
           ),
         ),
       ),

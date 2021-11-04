@@ -10,7 +10,6 @@ class ProductDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final Product product =
         ModalRoute.of(context)!.settings.arguments as Product;
-
     return Scaffold(
       appBar: AppBar(
         title: Text(product.name),
@@ -36,7 +35,7 @@ class ProductDetailPage extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Container(
-              padding: EdgeInsets.symmetric(horizontal:10),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               width: double.infinity,
               child: Text(
                 product.description,
