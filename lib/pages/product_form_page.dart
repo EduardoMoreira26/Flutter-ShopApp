@@ -19,6 +19,8 @@ class _ProductFormPageState extends State<ProductFormPage> {
   final _formKey = GlobalKey<FormState>();
   final _formData = Map<String, Object>();
 
+  bool _isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -26,24 +28,24 @@ class _ProductFormPageState extends State<ProductFormPage> {
   }
 
   @override
-    void didChangeDependencies() {
-      super.didChangeDependencies();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
-      if(_formData.isEmpty) {
-        final arg = ModalRoute.of(context)?.settings.arguments;
+    if (_formData.isEmpty) {
+      final arg = ModalRoute.of(context)?.settings.arguments;
 
-        if(arg != null) {
-          final product = arg as Product;
-          _formData['id'] = product.id;
-          _formData['name'] = product.name;
-          _formData['price'] = product.price;
-          _formData['description'] = product.description;
-          _formData['imageUrl'] = product.imageUrl;
+      if (arg != null) {
+        final product = arg as Product;
+        _formData['id'] = product.id;
+        _formData['name'] = product.name;
+        _formData['price'] = product.price;
+        _formData['description'] = product.description;
+        _formData['imageUrl'] = product.imageUrl;
 
-          _imageUrlController.text = product.imageUrl;
-        }
+        _imageUrlController.text = product.imageUrl;
       }
     }
+  }
 
   @override
   void dispose() {
@@ -67,7 +69,6 @@ class _ProductFormPageState extends State<ProductFormPage> {
     return isValidUrl && andsWithFile;
   }
 
-
   //Enviar formulario para criar produtos
   void _submitForm() {
     final isValid = _formKey.currentState?.validate() ?? false;
@@ -78,11 +79,15 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
     _formKey.currentState?.save();
 
+    setState(() => _isLoading = false);
+
     Provider.of<ProductList>(
       context,
       listen: false,
-    ).saveProduct(_formData);
-    Navigator.of(context).pop();
+    ).saveProduct(_formData).then((value) {
+      setState(() => _isLoading = true);
+      Navigator.of(context).pop();
+    });
   }
 
   @override
@@ -97,20 +102,24 @@ class _ProductFormPageState extends State<ProductFormPage> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              inputName(context),
-              inputPrice(context),
-              inputDescription(),
-              urlAndImageInput(),
-            ],
-          ),
-        ),
-      ),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(15),
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  children: [
+                    inputName(context),
+                    inputPrice(context),
+                    inputDescription(),
+                    urlAndImageInput(),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 
