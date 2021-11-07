@@ -99,17 +99,29 @@ class ProductList with ChangeNotifier {
           },
         ),
       );
+
       _items[index] = product;
       notifyListeners();
     }
   }
 
-  void removeProduct(Product product) {
+  Future<void> removeProduct(Product product) async {
     int index = _items.indexWhere((p) => p.id == product.id);
 
     if (index >= 0) {
-      _items.removeWhere((p) => p.id == product.id);
+      final product = _items[index];
+
+      _items.remove(product);
       notifyListeners();
+
+      final repsonse = await http.delete(
+        Uri.parse('$_baseUrl/${product.id}.json'),
+      );
+
+      if (repsonse.statusCode >= 400) {
+        _items.insert(index, product);
+        notifyListeners();
+      }
     }
   }
 }
