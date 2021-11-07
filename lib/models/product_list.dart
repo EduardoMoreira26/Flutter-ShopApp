@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shop/exceptions/http_exception.dart';
 import 'package:shop/models/product.dart';
 
 class ProductList with ChangeNotifier {
@@ -114,13 +115,17 @@ class ProductList with ChangeNotifier {
       _items.remove(product);
       notifyListeners();
 
-      final repsonse = await http.delete(
+      final response = await http.delete(
         Uri.parse('$_baseUrl/${product.id}.json'),
       );
 
-      if (repsonse.statusCode >= 400) {
+      if (response.statusCode >= 400) {
         _items.insert(index, product);
         notifyListeners();
+        throw HttpException(
+          message: 'Não foi possível excluir o produto.',
+          statusCode: response.statusCode,
+        );
       }
     }
   }
