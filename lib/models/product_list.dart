@@ -20,6 +20,7 @@ class ProductList with ChangeNotifier {
 
   Future<void> loadProducts() async {
     _items.clear();
+
     final response = await http.get(
       Uri.parse('${Constants.PRODUCT_BASE_URL}.json'),
     );
@@ -110,7 +111,6 @@ class ProductList with ChangeNotifier {
 
     if (index >= 0) {
       final product = _items[index];
-
       _items.remove(product);
       notifyListeners();
 
@@ -122,10 +122,29 @@ class ProductList with ChangeNotifier {
         _items.insert(index, product);
         notifyListeners();
         throw HttpException(
-          message: 'Não foi possível excluir o produto.',
+          msg: 'Não foi possível excluir o produto.',
           statusCode: response.statusCode,
         );
       }
     }
   }
 }
+
+  // bool _showFavoriteOnly = false;
+
+  // List<Product> get items {
+  //   if (_showFavoriteOnly) {
+  //     return _items.where((prod) => prod.isFavorite).toList();
+  //   }
+  //   return [..._items];
+  // }
+
+  // void showFavoriteOnly() {
+  //   _showFavoriteOnly = true;
+  //   notifyListeners();
+  // }
+
+  // void showAll() {
+  //   _showFavoriteOnly = false;
+  //   notifyListeners();
+  // }
